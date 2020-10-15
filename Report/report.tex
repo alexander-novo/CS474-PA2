@@ -1,0 +1,178 @@
+% !TEX options=--shell-escape
+\documentclass[headings=optiontoheadandtoc,listof=totoc,parskip=full]{scrartcl}
+
+\usepackage{amsmath,mathtools}
+\usepackage{enumitem}
+\usepackage[margin=.75in]{geometry}
+\usepackage[headsepline]{scrlayer-scrpage}
+\usepackage[USenglish]{babel}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage[newfloat]{minted}
+\usepackage{xcolor,tcolorbox}
+\usepackage{physics}
+\usepackage{needspace}
+\usepackage[format=hang, justification=justified]{caption}
+
+\usepackage{cleveref} % Needs to be loaded last
+
+\hypersetup{
+	linktoc = all,
+	pdfborder = {0 0 .5 [ 1 3 ]}
+}
+
+\newenvironment{longlisting}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{listname=Code Listings}
+
+\definecolor{lightgray}{gray}{0.95}
+
+\newmintedfile[cppcode]{c++}{
+	linenos,
+	firstnumber=1,
+	tabsize=2,
+	bgcolor=lightgray,
+	frame=single,
+	breaklines,
+	%texcomments % Turned off due to the presence of _ characters in many comments
+}
+
+\newmintedfile[plotcode]{gnuplot}{
+	linenos,
+	firstnumber=1,
+	tabsize=2,
+	bgcolor=lightgray,
+	frame=single,
+	breaklines,
+}
+
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\pagestyle{scrheadings}
+\rohead{Novotny \& Page}
+\lohead{CS 474 Programming Assignment 2}
+
+\title{Programming Assignment 2}
+\subtitle{CS 474\\\url{https://github.com/alexander-novo/CS474-PA2}}
+\author{Alexander Novotny\\--\% Work\\Sections \#\#,\#\# \and Matthew Page\\--\% Work\\Sections \#\#,\#\#}
+\date{Due: October 26, 2020 \\ Submitted: \today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\pagenumbering{gobble}
+
+\newpage
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%
+\section{Correlation}
+\label{sec:correlation}
+
+\subsection{Theory}
+
+
+\subsection{Implementation}
+
+
+\subsection{Results and Discussion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Averaging and Gaussian Smoothing}
+\label{sec:smoothing}
+
+\subsection{Theory}
+
+
+\subsection{Implementation}
+
+
+\subsection{Results and Discussion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Median Filtering}
+\label{sec:median}
+
+
+\subsection{Theory}
+\label{sec:median-theory}
+
+
+\subsection{Implementation}
+\label{sec:median-implementation}
+
+
+\subsection{Results and Discussion}
+\label{sec:median-results}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Unsharp Masking and High Boost Filtering}
+\label{sec:unsharp}
+
+
+\subsection{Theory}
+
+
+\subsection{Implementation}
+
+
+\subsection{Results and Discussion}
+\label{sec:unsharp-results}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gradient and Laplacian}
+\label{sec:gradient}
+
+\subsection{Theory}
+\label{sec:gradient-theory}
+
+
+\subsection{Implementation}
+\label{sec:gradient-implementation}
+
+
+\subsection{Results and Discussion}
+\label{sec:gradient-results}
+
+\clearpage
+\listoflistings
+
+Source code can also be found on the project's GitHub page: \url{https://github.com/alexander-novo/CS474-PA2}. See previous assignments for common code (such as the \texttt{Image} class).
+
+\begin{longlisting}
+	\caption{Implementation file for the \texttt{correlate} program.}
+	\label{lst:correlate}
+	\cppcode{../Q1-Correlation/main.cpp}
+\end{longlisting}
+
+\begin{longlisting}
+	\caption{Implementation file for the \texttt{smooth} program.}
+	\label{lst:smooth}
+	\cppcode{../Q2-Smoothing/main.cpp}
+\end{longlisting}
+
+\begin{longlisting}
+	\caption{Implementation file for the \texttt{median} program.}
+	\label{lst:median}
+	\cppcode{../Q3-Median/main.cpp}
+\end{longlisting}
+
+\begin{longlisting}
+	\caption{Implementation file for the \texttt{unsharp} program.}
+	\label{lst:unsharp}
+	\cppcode{../Q4-Unsharp/main.cpp}
+\end{longlisting}
+
+\begin{longlisting}
+	\caption{Implementation file for the \texttt{gradient} program.}
+	\label{lst:gradient}
+	\cppcode{../Q5-Gradient/main.cpp}
+\end{longlisting}
+
+\end{document}
