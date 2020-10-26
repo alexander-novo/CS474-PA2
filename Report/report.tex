@@ -73,6 +73,14 @@
 
 \subsection{Theory}
 
+Image correlation is a type of spatial filtering, which takes in a set of input pixels along with a number of weights to produce an output pixel at a given location in an image. The input pixels are defined by the location and size of a mask, called the kernel, which consists of a 2D square array of weight values. Typically the mask is an nn array of pixels, where n is odd, and the output pixel corresponds with the center pixel within the mask. When modeling an image as a 2D function f(x, y), the correlation operation can be viewed mathematically by the following equation
+
+\[\text{Corr}_w f(x, y) = (w \star f)(x, y) = \sum_{s=-a}^a \sum_{t=-b}^b w(s, t) f(x+s, y+t)\]
+
+where w(s, t) is the weight at the relative location s, t of the neighborhood centered at x, y.
+
+The correlation operation is linear, meaning that the output of the correlation function is a linear combination of the input pixels and weights. 
+
 
 \subsection{Implementation}
 
@@ -89,6 +97,13 @@
 
 \subsection{Implementation}
 
+Average and Gaussian smoothing also used command line arguments to read the input image, output image location, as well as the kernel size and smoothing type. Once the image is read, the smoothing is performed based on the type and size parameter passed by the user. The smoothie was performed by iterating through each pixel of the original image, using a nested for loop. For each pixel in the image, the kernel was applied using another set of nested for loops that iterate through each pixel in the neighborhood defined by the mask size. A bounds check is performed before each pixel access within the image, and if an index falls outside the image boundaries a default (padded) value of zero is assigned. The output pixel of the original image is then updated using the output of the filter.
+
+In the case of smoothing via averaging, the output pixel located at the center of the kernel matrix or mask is defined as the average value of all the pixels within the kernel neighborhood. For Gaussian Smoothing, a normalization constant was calculated by summing all values within the Gaussian mask. Each output pixel was then divided by this constant to ensure that the pixel values remain valid pixel values. A copy of the original image was also used in order to ensure that previously updated pixels do not influence future unaltered pixels during the filtering process.
+
+The main data structures used in the smoothing algorithms include the image class and a 2D array representing the 7x7 and 15x15 Gaussian masks. Each mask was defined as a constant, static 2D array of integers in order to make indexing similar to that of the image pixel values.
+
+
 
 \subsection{Results and Discussion}
 
@@ -100,6 +115,11 @@
 
 \subsection{Theory}
 \label{sec:median-theory}
+
+Median Filtering is another type of filter commonly used in image processing. Unlike the previous filters discussed, the median filter is an example of a nonlinear filter, whereby its output cannot be expressed as a linear combination of its input pixels. The median filter is performed by finding the median value within the neighborhood of pixels defined by the mask or kernel. The nonlinearity stems from the step of having to sort the pixel values in order to find the median value. 
+
+A common application of median filtering is removing certain types of noise from an image, often referred to as salt-and-pepper noise. This type of noise consists of random black and white pixels that become superimposed on an image. Figure _____ shows an example of this type of noise. This filter is able to remove so called salt-and-pepper noise due to the property of the median value m, which is defined as the 50th percentile of an ordered set of values. This implies that values on the extreme end of the scale, such as very dark or bright pixels, will in general not be selected to replace an image’s pixel during the filtering process. This results in an enhanced image with the noise removed, especially compared to using other linear spatial filters.
+
 
 
 \subsection{Implementation}
