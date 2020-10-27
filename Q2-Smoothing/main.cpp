@@ -46,16 +46,21 @@ static const int mask_15x15[15][15] = {
 */
 void smooth_image_average(Image& image, int mask_size){
 
-  for(int i = mask_size / 2; i < image.cols - (mask_size / 2); i++){
-   		for(int j = mask_size / 2; j < image.rows - (mask_size / 2); j++) {
+	Image originalImage = Image(image);
+
+  	for(int i = 0; i < image.cols; i++){
+   		for(int j = 0; j < image.rows; j++) {
 
    			int average = 0;
 
-   			for (int k = 0; k < mask_size; k++)
+   			for (int k = -mask_size/2; k < mask_size/2; k++)
    			{
-   				for (int l = 0; l < mask_size; l++)
+   				for (int l = -mask_size/2; l < mask_size/2; l++)
    				{
-   					average += image[i + k][j + l];
+   					if(i + k < 0 || i + k == image.cols || j + l < 0 || j + l == image.rows)
+   						average += 0;
+   					else
+   						average += originalImage[i + k][j + l];
    				}
    			}
 
@@ -74,7 +79,7 @@ void smooth_image_gaussian(Image& image, int mask_size){
 	for(int i = 0; i < mask_size; i++){
 		for (int j = 0; j < mask_size; j++){
 
-			std::cout << i << " " << j << std::endl;
+			//std::cout << i << " " << j << std::endl;
 
 			if(mask_size == 7)
 				normalizion_factor += mask_7x7[i][j];
@@ -99,9 +104,9 @@ void smooth_image_gaussian(Image& image, int mask_size){
    						output_pixel_value += 0;
    					}
    					else if(mask_size == 7)
-   						output_pixel_value += originalImage[i + k][j + l] * mask_7x7[k][l];
+   						output_pixel_value += originalImage[i + k][j + l] * mask_7x7[k + mask_size/2][l + mask_size/2];
    					else
-   						output_pixel_value += originalImage[i + k][j + l] * mask_15x15[k][l];
+   						output_pixel_value += originalImage[i + k][j + l] * mask_15x15[k + mask_size/2 - 1][l + mask_size/2 - 1];
    				}
    			}
 
