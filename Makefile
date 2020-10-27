@@ -9,7 +9,7 @@ SOURCES      = Common/image.cpp Q1-Correlation/main.cpp Q2-Smoothing/main.cpp Q3
 # Executable targets - add more to auto-make in default 'all' target
 EXEC         = Q1-Correlation/correlate Q2-Smoothing/smooth Q3-Median/median Q4-Unsharp/unsharp Q5-Gradient/gradient
 # Targets required for the homework, spearated by question
-REQUIRED_1   = 
+REQUIRED_1   = out/patterns-pattern-correlated.pgm
 REQUIRED_2   = out/lenna-7-average-smoothed.pgm out/lenna-15-average-smoothed.pgm out/lenna-7-gaussian-smoothed.pgm out/lenna-15-gaussian-smoothed.pgm out/sf-7-average-smoothed.pgm out/sf-15-average-smoothed.pgm out/sf-7-gaussian-smoothed.pgm out/sf-15-gaussian-smoothed.pgm
 REQUIRED_3   = out/lenna-7-30-median.pgm out/lenna-15-30-median.pgm out/lenna-7-50-median.pgm out/lenna-15-50-median.pgm out/boat-7-30-median.pgm out/boat-15-30-median.pgm out/boat-7-50-median.pgm out/boat-15-50-median.pgm
 REQUIRED_4   = 
@@ -42,7 +42,9 @@ Q5-Gradient/gradient: $(OBJDIR)/Q5-Gradient/main.o $(OBJDIR)/Common/image.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 ### Question 1 Outputs ###
-
+.SECONDEXPANSION:
+out/%-correlated.pgm: Q1-Correlation/correlate Images/$$(word 1,$$(subst -, ,$$*)).pgm | out
+	Q1-Correlation/correlate Images/$(word 1,$(subst -, ,$*)).pgm $@ Images/$(word 2,$(subst -, ,$*)).pgm 83 55
 
 ### Question 2 Outputs ###
 .SECONDEXPANSION:
