@@ -79,7 +79,7 @@ void median_filter(Image& image, int mask_size){
    				for (int l = -mask_size/2; l < mask_size/2; l++)
    				{
    					//check bounds and pad zeros if necessary
-   					if(i + k < 0 || i + k == image.cols || j + l < 0 || j + l == image.rows)
+   					if(i + k < 0 || i + k >= image.cols || j + l < 0 || j + l >= image.rows)
    						pixel_values.push_back(0);
    					else
    						pixel_values.push_back(orignalImage[i + k][j + l]);
