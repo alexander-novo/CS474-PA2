@@ -6,12 +6,19 @@
 
 #include "../Common/image.h"
 
+/*
+  Normalizes an image based min-max nomralization
+  @Param: image - the input image that will be quantized
+  @Param: corr_values - the correlation values
+  @Return: void
+*/
 void normalize_image(Image& image, std::vector<int> corr_values){
 
 	int max = 0;
 	int min = 1000000000;
 	int value;
 
+	// find min an max correlation values
 	for (int i = 0; i < image.rows; i++)
 	{
 		for (int j = 0; j < image.cols; j++)
@@ -26,6 +33,7 @@ void normalize_image(Image& image, std::vector<int> corr_values){
 		}
 	}
 
+	// scale each pixel and update image
 	for (int i = 0; i < image.rows; i++)
 	{
 		for (int j = 0; j < image.cols; j++)
@@ -37,9 +45,11 @@ void normalize_image(Image& image, std::vector<int> corr_values){
 }
 
 /*
-  Quantizes an image based on the quantization level
+  Correlates an image based on the image mask
   @Param: image - the input image that will be quantized
-  @Param: quantization_level - the number of gray level values to use
+  @Param: mask - the image mask
+  @Param: size_y - the mask height
+  @Param: mask - the mask width
   @Return: void
 */
 void correlation(Image& image, Image mask, int size_y, int size_x){
@@ -48,16 +58,19 @@ void correlation(Image& image, Image mask, int size_y, int size_x){
 	Image originalImage = Image(image);
 	std::vector<int> correlation_values;
 
+	// iterate through image pixels
     for(int i = 0; i < image.rows; i++){
    		for(int j = 0; j < image.cols; j++) {
 
    			int sum = 0;
 
+   			// iterate over mask
    			for (int k = -size_y/2; k < size_y/2; k++)
    			{
    				for (int l = -size_x/2; l < size_x/2; l++)
    				{
 
+   					//check bounds
    					if(i + k < 0 || i + k == size_x || j + l < 0 || j + l == size_y)
    						sum += 0;
    					else
@@ -69,6 +82,7 @@ void correlation(Image& image, Image mask, int size_y, int size_x){
    		}
    	}
 
+   	// normalize image
    	normalize_image(image, correlation_values);
    
 }
@@ -85,7 +99,7 @@ int main(int argc, char** argv) {
  	std::ifstream inMaskFile(argv[3]);
  	Image mask = Image::read(inMaskFile);
 
-    // Get mask size
+    // Get mask width
     int mask_size_x;
     std::istringstream ss(argv[4]);
  	if(ss >> mask_size_x) {
@@ -96,6 +110,7 @@ int main(int argc, char** argv) {
  		}
  	}
 
+ 	// Get mask height
  	int mask_size_y;
     std::istringstream ss2(argv[5]);
  	if(ss2 >> mask_size_y) {
@@ -108,7 +123,7 @@ int main(int argc, char** argv) {
 
 	std::cout << "Question 1: Correlation." << std::endl;
 
-  // Quantize the image
+  // Correlate the image
 	correlation(image, mask, mask_size_y, mask_size_x);
 	std::cout << "Finished" << std::endl;
 

@@ -7,6 +7,7 @@
 
 #include "../Common/image.h"
 
+// 7x7 Gaussian mask
 static const int mask_7x7[7][7] = {
 
 		{1, 1, 2, 2, 2, 1, 1},
@@ -19,6 +20,7 @@ static const int mask_7x7[7][7] = {
 							
 						};
 
+//15x15 Gaussian mask
 static const int mask_15x15[15][15] = {
 
 	{2, 2,  3,  4,  5,  5,  6,  6,  6,  5,  5,  4,  3, 2, 2},
@@ -39,24 +41,27 @@ static const int mask_15x15[15][15] = {
 };
 
 /*
-  Quantizes an image based on the quantization level
-  @Param: image - the input image that will be quantized
-  @Param: quantization_level - the number of gray level values to use
+  Smoothes an image based on averaging
+  @Param: image - the input image that will be smoothed
+  @Param: mask_size - the width and height of the mask
   @Return: void
 */
 void smooth_image_average(Image& image, int mask_size){
 
 	Image originalImage = Image(image);
 
+	// Iterate through image pixels
   	for(int i = 0; i < image.cols; i++){
    		for(int j = 0; j < image.rows; j++) {
 
    			int average = 0;
 
+   			//iterate through mask
    			for (int k = -mask_size/2; k < mask_size/2; k++)
    			{
    				for (int l = -mask_size/2; l < mask_size/2; l++)
    				{
+   					// calcualte average
    					if(i + k < 0 || i + k == image.cols || j + l < 0 || j + l == image.rows)
    						average += 0;
    					else
@@ -69,6 +74,12 @@ void smooth_image_average(Image& image, int mask_size){
    	}
 }
 
+/*
+  Smoothes an image based on the Gaussian mask
+  @Param: image - the input image that will be smoothed
+  @Param: mask_size - the width and height of the mask
+  @Return: void
+*/
 void smooth_image_gaussian(Image& image, int mask_size){
 
 	int normalizion_factor = 0;
@@ -79,8 +90,6 @@ void smooth_image_gaussian(Image& image, int mask_size){
 	for(int i = 0; i < mask_size; i++){
 		for (int j = 0; j < mask_size; j++){
 
-			//std::cout << i << " " << j << std::endl;
-
 			if(mask_size == 7)
 				normalizion_factor += mask_7x7[i][j];
 			else
@@ -88,13 +97,13 @@ void smooth_image_gaussian(Image& image, int mask_size){
 		}
 	}
 
-	std::cout << normalizion_factor << std::endl;
-
+	// iterate through image pixels
     for(int i = 0; i < image.cols; i++){
    		for(int j = 0; j < image.rows; j++) {
 
    			int output_pixel_value = 0;
 
+   			// iterate through mask
    			for (int k = -mask_size/2; k < mask_size/2; k++)
    			{
    				for (int l = -mask_size/2; l < mask_size/2; l++)
@@ -103,6 +112,7 @@ void smooth_image_gaussian(Image& image, int mask_size){
    					if(i + k < 0 || i + k == image.cols || j + l < 0 || j + l == image.rows){
    						output_pixel_value += 0;
    					}
+   					//calculate output value
    					else if(mask_size == 7)
    						output_pixel_value += originalImage[i + k][j + l] * mask_7x7[k + mask_size/2][l + mask_size/2];
    					else
@@ -110,6 +120,7 @@ void smooth_image_gaussian(Image& image, int mask_size){
    				}
    			}
 
+   			// update image pixel
    			image[i][j] = (int) (output_pixel_value / normalizion_factor);
    		}
    	}
@@ -117,9 +128,6 @@ void smooth_image_gaussian(Image& image, int mask_size){
 
 int main(int argc, char** argv) {
 
-	int M, N, Q;
- 	bool type;
- 	int val;
  	int mask_size;
  	std::istringstream ss(argv[3]);
 
@@ -133,6 +141,7 @@ int main(int argc, char** argv) {
  		}
  	}
 
+ 	// Get type of smoothing
  	std::string filter_type = argv[4];
  	if(filter_type != "average" && filter_type != "gaussian"){
 
