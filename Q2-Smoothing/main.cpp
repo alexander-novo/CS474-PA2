@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
  	int mask_size;
  	std::istringstream ss(argv[3]);
 
-  // Get quantization level
+  // Get mask size
  	if(ss >> mask_size) {
  		if(mask_size != 7 && mask_size != 15){
  			std::cout << mask_size << std::endl;

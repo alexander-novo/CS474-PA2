@@ -56,7 +56,7 @@
 
 \title{Programming Assignment 2}
 \subtitle{CS 474\\\url{https://github.com/alexander-novo/CS474-PA2}}
-\author{Alexander Novotny\\--\% Work\\Sections \#\#,\#\# \and Matthew Page\\--\% Work\\Sections \#\#,\#\#}
+\author{Alexander Novotny\\--\% Work\\Sections \#\#,\#\# \and Matthew Page\\50\% Work\\Sections 1, 2, and 3}
 \date{Due: October 26, 2020 \\ Submitted: \today}
 
 \begin{document}
@@ -79,20 +79,50 @@ Image correlation is a type of spatial filtering, which takes in a set of input 
 
 where w(s, t) is the weight at the relative location s, t of the neighborhood centered at x, y.
 
-The correlation operation is linear, meaning that the output of the correlation function is a linear combination of the input pixels and weights. 
+The correlation operation is linear, meaning that the output of the correlation function is a linear combination of the input pixels and weights. There are many applications of image correlation, such as smoothing, sharpening, and noise reduction. It is worth noting that a similar operation to correlation exists called convolution, whereby the kernel matrix is flipped both horizontally and vertically. 
 
 
 \subsection{Implementation}
 
+In order to implement image correlation, a pgm image was first read into the program using command line arguments, along with the output image location and mask. The mask weights were imputed using the pgm image format, allowing other images to serve as the mask. Also, the dimensions of the mask are taken as command line arguments. 
+
+The main algorithm for performing correlation consists of iterating through each pixel within the input image and applying the correlation operation at each location. To perform the correlation, a  second set of for loops are used to iterate through each pixel within the neighborhood defined by the mask dimensions. The output value is calculated by summing each pixel value multiplied by its corresponding weight value within the mask. Before this value is added to the image, it is added to an integer vector, such that min-max normalization may take place before the pixel is updated in the image. This ensures pixel values remain within the proper range of 0-255.
+
+In order to isolate the possible locations of the mask image within the input image, the normalization was performed such that the largest correlation values were depicted as white pixels and the remaining as black. Discussion of the results of the correlation function is given below.
+
+
 
 \subsection{Results and Discussion}
 
+The correlation function was performed using a patterned input image with the mask corresponding to a single pattern similar to those within the input image. A mask size of 83x55 was chosen, corresponding to the dimension of the mask image. Figure 1 showcases the input images used, along with the resulting (normalized)  image of the correlation operation. According to the figure, it is easy to see the locations of the matching patterns found during the correlation process. These correspond to the brightest whte blobs within the resulting image. These blobs are indications of a high correlation value, which indicates that the most of the pixels within the neighborhood are similar to the corresponding mask values, resulting in an overall higher output value. Also, the general direction of the blobs can be used to further narrow the possible locations. For example, although there is a high correlation value in the blob near the top right of the image, the general orientation does not match that of the mask as well as the other three true matches.
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/patterns}
+	\includegraphics[width=.2\textwidth]{../Images/pattern}
+	\includegraphics[width=.2\textwidth]{../out/patterns-pattern-correlated}
+	\caption{The result of correlation on the patterns image (left) with the given mask. The resulting normalized image (right) demonstrates the effect of correlation. The three white blobs correspond to the location of the mask pattern within the image.}
+	\label{fig:correlation-result-1}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Averaging and Gaussian Smoothing}
 \label{sec:smoothing}
 
 \subsection{Theory}
+
+Averaging and Gaussian Smoothing are two common techniques for removing fine details from an image, resulting in a smoothed or blurred image. Both types of smoothing are examples of a linear spatial filter. Also, both types of smoothing techniques have similar properties, as well as different advantages and disadvantages. 
+
+Smoothing via averaging corresponds to taking the average of each pixel value within the bounds of the kernel and using the result as the output pixel. This operation results in an output value that takes into account all neighboring pixel values equally. MAthematically this operation can be represented as
+
+\[f(x, y) \rightarrow \frac{1}{N} \sum_{s=-a}^a \sum_{t=-b}^b f(x+s, y+t)\]
+
+where N is the number of elements in the mask. Another method of smoothing is to assign each weight value according to a Gaussian distribution. This results in better smoothing, however it is more difficult to implement compared to using averaging. The values of the mask can be taken from a 2D Gaussian distribution given mathematically as 
+
+\[w(s, t) = K e^{-\frac{s^2+t^2}{2\sigma^2}}\]
+
+This method of smoothing has the benefit of considering pixels closer to the target pixel as more important or having a higher weight compared to pixels further away from the target image, typically resulting in a better smoothed image.
 
 
 \subsection{Implementation}
@@ -104,9 +134,34 @@ In the case of smoothing via averaging, the output pixel located at the center o
 The main data structures used in the smoothing algorithms include the image class and a 2D array representing the 7x7 and 15x15 Gaussian masks. Each mask was defined as a constant, static 2D array of integers in order to make indexing similar to that of the image pixel values.
 
 
-
 \subsection{Results and Discussion}
 
+The techniques of averaging and gaussian smoothing were applied to two separate images, with two different mask sizes each. The results of the smoothing filters applied to the lenna.pgm image are shown in figure 2. According to the results, it appears that both filters perform well at removing a large amount of fine detail from the original image, especially near the fur material of the woman’s hat. However, it appears that the use of average smoothing using a 7x7 mask leaves the image more blurry compared to the Gaussian smoothed image with a similar sized mask. The average smoothed image also appears slightly darker compared to the others. For the 15x15 masked images, the differences become less evident, with the Gaussian smoothed image having slightly more discernible details and slightly less aliasing compared to the smoothed image via averaging. 
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/lenna}
+	\includegraphics[width=.2\textwidth]{../out/lenna-7-average}
+	\includegraphics[width=.2\textwidth]{../out/lenna-15-average}
+	\includegraphics[width=.2\textwidth]{../out/lenna-7-gaussian}
+	\includegraphics[width=.2\textwidth]{../out/lenna-15-gaussian}
+	\caption{A comparison of \texttt{lenna.pgm} with various smoothed images (From left to right: Original, 7x7 averaging, 15x15 averaging, 7x7 Gaussian, 15x15 Gaussian).}
+	\label{fig:smoothing-result-1}
+\end{figure}
+
+Similarly, the results of averaging and gaussian smoothing for the sf.pgm image are shown in figure 3. Like with the lenna.pgm images, both smoothed images with a 7x7 mask lose much of the fine grained details of the original image. However, the Gaussian smoothed image again appears slightly less aliased with slightly more discernible details, especially near the bridge trusses. For the 15x15 masks, the Gaussian filter again generates a smoother (less aliased) image compared to the averaging filter, even though both lose considerable detail compared to the 7x7 masks.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/sf}
+	\includegraphics[width=.2\textwidth]{../out/sf-7-average}
+	\includegraphics[width=.2\textwidth]{../out/sf-15-average}
+	\includegraphics[width=.2\textwidth]{../out/sf-7-gaussian}
+	\includegraphics[width=.2\textwidth]{../out/sf-15-gaussian}
+	\caption{A comparison of \texttt{sf.pgm} with various smoothed images (From left to right: Original, 7x7 averaging, 15x15 averaging, 7x7 Gaussian, 15x15 Gaussian).}
+	\label{fig:smoothing-result-1}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Median Filtering}
@@ -118,16 +173,87 @@ The main data structures used in the smoothing algorithms include the image clas
 
 Median Filtering is another type of filter commonly used in image processing. Unlike the previous filters discussed, the median filter is an example of a nonlinear filter, whereby its output cannot be expressed as a linear combination of its input pixels. The median filter is performed by finding the median value within the neighborhood of pixels defined by the mask or kernel. The nonlinearity stems from the step of having to sort the pixel values in order to find the median value. 
 
-A common application of median filtering is removing certain types of noise from an image, often referred to as salt-and-pepper noise. This type of noise consists of random black and white pixels that become superimposed on an image. Figure _____ shows an example of this type of noise. This filter is able to remove so called salt-and-pepper noise due to the property of the median value m, which is defined as the 50th percentile of an ordered set of values. This implies that values on the extreme end of the scale, such as very dark or bright pixels, will in general not be selected to replace an image’s pixel during the filtering process. This results in an enhanced image with the noise removed, especially compared to using other linear spatial filters.
+A common application of median filtering is removing certain types of noise from an image, often referred to as salt-and-pepper noise. This type of noise consists of random black and white pixels that become superimposed on an image. Figure 4 shows an example of this type of noise. This filter is able to remove so called salt-and-pepper noise due to the property of the median value m, which is defined as the 50th percentile of an ordered set of values. This implies that values on the extreme end of the scale, such as very dark or bright pixels, will in general not be selected to replace an image’s pixel during the filtering process. This results in an enhanced image with the noise removed, especially compared to using other linear spatial filters.
 
 
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.5\textwidth]{../out/lenna-noise-30}
+	\caption{An example of Salt-and-Pepper noise on the lenna.pgm image}
+	\label{fig:noise-example-1}
+\end{figure}
 
 \subsection{Implementation}
 \label{sec:median-implementation}
 
+In order to implement median filtering a similar process of iterating through each pixel value using a double nested for loop was used. A second set of nested for loops was then used to iterate through each pixel within the kernel neighborhood. Each pixel within the neighborhood was then added to a vector of integer pixel values. If the location of the pixel was out of bounds, a default value of zero was added to the vector instead, acting as a padded zero. To find the median value, the values within the vector were sorted and the middle value was selected. This median value then replaced the original image’s pixel value at the location defined by the center of the mask. 
+
+In order to test median filtering various noisy images were generated. The process of generating the noise involved creating a vector containing all indices of the input image. This vector was then randomly shuffled, and the first X\% of image indices from the random vector were selected to be noise. For each selected index, a random number generator was used to randomly assign either a black of white pixel with equal chance for both.
+
+
 
 \subsection{Results and Discussion}
 \label{sec:median-results}
+
+The median filter was used on two separate images, both of which used varying amounts of noise. In figure 5 the results of the median filter using the lenna.pgm image are shown. In the case of using a larger mask size of 15x15, it appears that much more smoothing occurred as a result, leaving many of the details lost. However, the main features of the image are much more visible. In the case of a smaller filter size, there remained some artifacts from the noise, however the parts of the image that are not corrupted remain much more detailed compared to the use of larger mask.
+Figure 6 showcases similar results using the boat.pgm image. The use of a smaller mask results in less smearing in the final image, however there remains artifacts from the noise. In the case of 50\% noise, much of the details become obscured from the substantial amount of artifacts left in the image, possibly due to the overall lighter input image. In general is appears that a tradeoff between the size of the mask and the desired type of image.
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/lenna}
+	\includegraphics[width=.2\textwidth]{../out/lenna-noise-30}
+	\includegraphics[width=.2\textwidth]{../out/lenna-noise-50}
+	\includegraphics[width=.2\textwidth]{../out/lenna-7-30-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-15-30-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-7-50-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-15-50-median}
+	\caption{A comparison of \texttt{lenna.pgm} with noisy and filtered images (From left to right: Original, 30\% noise, 50\% noise, 7x7 w/30\% noise, 15x15 w/30\% noise, 7x7 w/50\% noise, 15x15 w/50\% noise).}
+	\label{fig:median-result-1}
+\end{figure}
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/boat}
+	\includegraphics[width=.2\textwidth]{../out/boat-noise-30}
+	\includegraphics[width=.2\textwidth]{../out/boat-noise-50}
+	\includegraphics[width=.2\textwidth]{../out/boat-7-30-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-15-30-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-7-50-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-15-50-median}
+	\caption{A comparison of \texttt{boat.pgm} with noisy and filtered images (From left to right: Original, 30\% noise, 50\% noise, 7x7 w/30\% noise, 15x15 w/30\% noise, 7x7 w/50\% noise, 15x15 w/50\% noise).}
+	\label{fig:median-result-2}
+\end{figure}
+
+Lastly, simple averaging was used in order to compare with the median filtered images. Based on figure 7, it appears that averaging results in a lower contrast image compared to using median filtering, as well as having an aliased appearance, no matter the amount of noise or mask size. Figure 8 shows similar results using the boat.pgm image. The reason for these results includes the addition of very bright or dark pixels from the noise, which causes all output pixels to tend towards a similar grey value. The random distribution of the noise may also be responsible for the pixelation/aliasing. 
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/lenna}
+	\includegraphics[width=.2\textwidth]{../out/lenna-noise-30}
+	\includegraphics[width=.2\textwidth]{../out/lenna-noise-50}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-7-30-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-15-30-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-7-50-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-15-50-median}
+	\caption{A comparison of \texttt{lenna.pgm} with noisy and filtered images (From left to right: Original, 30\% noise, 50\% noise, 7x7 w/30\% noise, 15x15 w/30\% noise, 7x7 w/50\% noise, 15x15 w/50\% noise).}
+	\label{fig:median-result-3}
+\end{figure}
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=.2\textwidth]{../Images/boat}
+	\includegraphics[width=.2\textwidth]{../out/boat-noise-30}
+	\includegraphics[width=.2\textwidth]{../out/boat-noise-50}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-7-30-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-15-30-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-7-50-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-15-50-median}
+	\caption{A comparison of \texttt{boat.pgm} with noisy and filtered images (From left to right: Original, 30\% noise, 50\% noise, 7x7 w/30\% noise, 15x15 w/30\% noise, 7x7 w/50\% noise, 15x15 w/50\% noise).}
+	\label{fig:median-result-4}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
