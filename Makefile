@@ -63,7 +63,9 @@ out/%-median.pgm: Q3-Median/median Images/$$(word 1,$$(subst -, ,$$*)).pgm | out
 
 
 # Figures needed for the report
-report: 
+report: Images/patterns.png Images/pattern.png out/patterns-pattern-correlated.png
+report: Images/lenna.png Images/sf.png out/lenna-7-average-smoothed.png out/lenna-15-average-smoothed.png out/lenna-7-gaussian-smoothed.png out/lenna-15-gaussian-smoothed.png out/sf-7-average-smoothed.png out/sf-15-average-smoothed.png out/sf-7-gaussian-smoothed.png out/sf-15-gaussian-smoothed.png
+report: Images/boat.png out/lenna-7-30-median.png out/lenna-15-30-median.png out/lenna-7-50-median.png out/lenna-15-50-median.png out/boat-7-30-median.png out/boat-15-30-median.png out/boat-7-50-median.png out/boat-15-50-median.png
 
 clean:
 	rm -rf $(OBJDIR)

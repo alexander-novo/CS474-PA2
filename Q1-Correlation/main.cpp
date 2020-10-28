@@ -71,7 +71,7 @@ void correlation(Image& image, Image mask, int size_y, int size_x){
    				{
 
    					//check bounds
-   					if(i + k < 0 || i + k >= size_x || j + l < 0 || j + l >= size_y)
+   					if(i + k < 0 || i + k == size_x || j + l < 0 || j + l == size_y)
    						sum += 0;
    					else
    						sum += originalImage[i + k][j + l] * mask[k + size_y/2][l + size_x/2];
@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
  	if(ss >> mask_size_x) {
  		if(mask_size_x < 1 || mask_size_x > image.cols){
 
- 			std::cout << "Error: Mask size should be greater than 0 and smaller than image size" << std::endl;
+ 			std::cout << "Error: Mask size should be greater than 0 and smaller than image size" << std::endl; 
  				return 1;
  		}
  	}
