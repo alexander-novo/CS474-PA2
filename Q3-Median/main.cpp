@@ -34,7 +34,7 @@ void smooth_image_average(Image& image, int mask_size, int noise_percentage, cha
    				for (int l = -mask_size/2; l < mask_size/2; l++)
    				{
             // calcualte average
-            if(i + k < 0 || i + k == image.cols || j + l < 0 || j + l == image.rows)
+            if(i + k < 0 || i + k >= image.cols || j + l < 0 || j + l >= image.rows)
               average += 0;
             else
    					  average += image[i + k][j + l];

@@ -71,7 +71,7 @@ void correlation(Image& image, Image mask, int size_y, int size_x){
    				{
 
    					//check bounds
-   					if(i + k < 0 || i + k == size_x || j + l < 0 || j + l == size_y)
+   					if(i + k < 0 || i + k >= size_x || j + l < 0 || j + l >= size_y)
    						sum += 0;
    					else
    						sum += originalImage[i + k][j + l] * mask[k + size_y/2][l + size_x/2];
