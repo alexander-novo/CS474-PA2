@@ -16,7 +16,8 @@ Report/_minted-report
 
 Images/*.png
 
-Q1-Sampling/sample
-Q2-Quantization/quantize
-Q3-Equalization/equalize
-Q4-Specification/specify
+Q1-Correlation/correlate
+Q2-Smoothing/smooth
+Q3-Median/median
+Q4-Unsharp/unsharp
+Q5-Gradient/gradient

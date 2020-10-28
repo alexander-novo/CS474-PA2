@@ -12,7 +12,7 @@ EXEC         = Q1-Correlation/correlate Q2-Smoothing/smooth Q3-Median/median Q4-
 REQUIRED_1   = out/patterns-pattern-correlated.pgm
 REQUIRED_2   = out/lenna-7-average-smoothed.pgm out/lenna-15-average-smoothed.pgm out/lenna-7-gaussian-smoothed.pgm out/lenna-15-gaussian-smoothed.pgm out/sf-7-average-smoothed.pgm out/sf-15-average-smoothed.pgm out/sf-7-gaussian-smoothed.pgm out/sf-15-gaussian-smoothed.pgm
 REQUIRED_3   = out/lenna-7-30-median.pgm out/lenna-15-30-median.pgm out/lenna-7-50-median.pgm out/lenna-15-50-median.pgm out/boat-7-30-median.pgm out/boat-15-30-median.pgm out/boat-7-50-median.pgm out/boat-15-50-median.pgm
-REQUIRED_4   = 
+REQUIRED_4   = out/lenna-1-highboost.pgm out/lenna-2-highboost.pgm out/f_16-1-highboost.pgm out/f_16-2-highboost.pgm
 REQUIRED_5   =
 REQUIRED_OUT = $(REQUIRED_1) $(REQUIRED_2) $(REQUIRED_3) $(REQUIRED_4) $(REQUIRED_5)
 
@@ -57,7 +57,9 @@ out/%-median.pgm: Q3-Median/median Images/$$(word 1,$$(subst -, ,$$*)).pgm | out
 	Q3-Median/median Images/$(word 1,$(subst -, ,$*)).pgm $@ $(word 2,$(subst -, ,$*)) $(word 3,$(subst -, ,$*))
 
 ### Question 4 Outputs ###
-
+.SECONDEXPANSION:
+out/%-highboost.pgm: Q4-Unsharp/unsharp Images/$$(word 1,$$(subst -, ,$$*)).pgm | out
+	Q4-Unsharp/unsharp Images/$(word 1,$(subst -, ,$*)).pgm $(word 2,$(subst -, ,$*)) $@
 
 ### Question 5 Outputs ###
 
@@ -68,6 +70,7 @@ report: out/lenna-7-average-smoothed.png out/lenna-15-average-smoothed.png out/l
 report: out/lenna-7-30-median.png out/lenna-15-30-median.png out/lenna-7-50-median.png out/lenna-15-50-median.png out/boat-7-30-median.png out/boat-15-30-median.png out/boat-7-50-median.png out/boat-15-50-median.png
 report: out/lenna-noise-30.png out/lenna-noise-50.png out/boat-noise-30.png out/boat-noise-50.png
 report: out/lenna-smoothed-7-30.png out/lenna-smoothed-15-30.png out/lenna-smoothed-7-50.png out/lenna-smoothed-15-50.png out/boat-smoothed-7-30.png out/boat-smoothed-15-30.png out/boat-smoothed-7-50.png out/boat-smoothed-15-50.png 
+report: out/lenna-1-highboost.png out/lenna-2-highboost.png out/f_16-1-highboost.png out/f_16-2-highboost.png
 
 clean:
 	rm -rf $(OBJDIR)

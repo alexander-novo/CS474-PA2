@@ -24,7 +24,7 @@ public:
 	};
 
 	Image();
-	Image(unsigned, unsigned, unsigned);
+	Image(unsigned M, unsigned N, unsigned Q);
 	Image(const Image &);  // Copy constructor
 	Image(Image &&);       // Move constructor
 	~Image();

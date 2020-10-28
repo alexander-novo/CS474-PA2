@@ -7,14 +7,16 @@
 
 Image::Image() : Image(0, 0, 0, nullptr) {}
 
-Image::Image(unsigned M, unsigned N, unsigned Q) : Image(M, N, Q, new Image::pixelT[M * N]) {}
+Image::Image(unsigned M, unsigned N, unsigned Q)
+    : Image(M, N, Q, new Image::pixelT[M * N]) {}
 
 Image::Image(const Image& oldImage) : Image(oldImage.M, oldImage.N, oldImage.Q) {
 	for (unsigned i = 0; i < M * N; i++) { pixelValue[i] = oldImage.pixelValue[i]; }
 }
 
 // Move constructor - take old image's pixel values and make old image invalid
-Image::Image(Image&& oldImage) : Image(oldImage.M, oldImage.N, oldImage.Q, oldImage.pixelValue) {
+Image::Image(Image&& oldImage)
+    : Image(oldImage.M, oldImage.N, oldImage.Q, oldImage.pixelValue) {
 	oldImage.M = oldImage.N = oldImage.Q = 0;
 	oldImage.pixelValue                  = nullptr;
 }
@@ -37,7 +39,9 @@ Image Image::read(std::istream& in) {
 
 	// read header
 	in.getline(header, 100, '\n');
-	if ((header[0] != 'P') || (header[1] != '5')) { throw std::runtime_error("Image is not PGM!"); }
+	if ((header[0] != 'P') || (header[1] != '5')) {
+		throw std::runtime_error("Image is not PGM!");
+	}
 
 	in.getline(header, 100, '\n');
 	while (header[0] == '#') in.getline(header, 100, '\n');
@@ -48,7 +52,8 @@ Image Image::read(std::istream& in) {
 	in.getline(header, 100, '\n');
 	Q = strtol(header, &ptr, 0);
 
-	if (Q > 255) throw std::runtime_error("Image cannot be read correctly (Q > 255)!");
+	if (Q > 255)
+		throw std::runtime_error("Image cannot be read correctly (Q > 255)!");
 
 	charImage = new unsigned char[M * N];
 
@@ -68,7 +73,8 @@ std::ostream& operator<<(std::ostream& out, const Image& im) {
 	out << im.N << " " << im.M << std::endl;
 	out << im.Q << std::endl;
 
-	out.write(reinterpret_cast<char*>(im.pixelValue), (im.M * im.N) * sizeof(unsigned char));
+	out.write(reinterpret_cast<char*>(im.pixelValue),
+	          (im.M * im.N) * sizeof(unsigned char));
 
 	if (out.fail()) throw std::runtime_error("Something failed with writing image.");
 }
@@ -145,5 +151,6 @@ std::ostream& operator<<(std::ostream& out, const Image::Header& head) {
 		case Image::Header::Type::GRAY:
 			out << "PGM Grayscale ";
 	}
-	out << "Image size " << head.M << " x " << head.N << " and max value of " << head.Q << ".";
+	out << "Image size " << head.M << " x " << head.N << " and max value of "
+	    << head.Q << ".";
 }
