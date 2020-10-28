@@ -56,7 +56,7 @@
 
 \title{Programming Assignment 2}
 \subtitle{CS 474\\\url{https://github.com/alexander-novo/CS474-PA2}}
-\author{Alexander Novotny\\--\% Work\\Sections \#\#,\#\# \and Matthew Page\\50\% Work\\Sections 1, 2, and 3}
+\author{Alexander Novotny\\--\% Work\\Sections 4,5 \and Matthew Page\\50\% Work\\Sections 1, 2, and 3}
 \date{Due: October 26, 2020 \\ Submitted: \today}
 
 \begin{document}
@@ -142,10 +142,10 @@ The techniques of averaging and gaussian smoothing were applied to two separate 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/lenna}
-	\includegraphics[width=.2\textwidth]{../out/lenna-7-average}
-	\includegraphics[width=.2\textwidth]{../out/lenna-15-average}
-	\includegraphics[width=.2\textwidth]{../out/lenna-7-gaussian}
-	\includegraphics[width=.2\textwidth]{../out/lenna-15-gaussian}
+	\includegraphics[width=.2\textwidth]{../out/lenna-7-average-smoothed}
+	\includegraphics[width=.2\textwidth]{../out/lenna-15-average-smoothed}
+	\includegraphics[width=.2\textwidth]{../out/lenna-7-gaussian-smoothed}
+	\includegraphics[width=.2\textwidth]{../out/lenna-15-gaussian-smoothed}
 	\caption{A comparison of \texttt{lenna.pgm} with various smoothed images (From left to right: Original, 7x7 averaging, 15x15 averaging, 7x7 Gaussian, 15x15 Gaussian).}
 	\label{fig:smoothing-result-1}
 \end{figure}
@@ -155,12 +155,12 @@ Similarly, the results of averaging and gaussian smoothing for the sf.pgm image 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/sf}
-	\includegraphics[width=.2\textwidth]{../out/sf-7-average}
-	\includegraphics[width=.2\textwidth]{../out/sf-15-average}
-	\includegraphics[width=.2\textwidth]{../out/sf-7-gaussian}
-	\includegraphics[width=.2\textwidth]{../out/sf-15-gaussian}
+	\includegraphics[width=.2\textwidth]{../out/sf-7-average-smoothed}
+	\includegraphics[width=.2\textwidth]{../out/sf-15-average-smoothed}
+	\includegraphics[width=.2\textwidth]{../out/sf-7-gaussian-smoothed}
+	\includegraphics[width=.2\textwidth]{../out/sf-15-gaussian-smoothed}
 	\caption{A comparison of \texttt{sf.pgm} with various smoothed images (From left to right: Original, 7x7 averaging, 15x15 averaging, 7x7 Gaussian, 15x15 Gaussian).}
-	\label{fig:smoothing-result-1}
+	\label{fig:smoothing-result-2}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -233,10 +233,10 @@ Lastly, simple averaging was used in order to compare with the median filtered i
 	\includegraphics[width=.2\textwidth]{../Images/lenna}
 	\includegraphics[width=.2\textwidth]{../out/lenna-noise-30}
 	\includegraphics[width=.2\textwidth]{../out/lenna-noise-50}
-	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-7-30-median}
-	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-15-30-median}
-	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-7-50-median}
-	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-15-50-median}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-7-30}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-15-30}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-7-50}
+	\includegraphics[width=.2\textwidth]{../out/lenna-smoothed-15-50}
 	\caption{A comparison of \texttt{lenna.pgm} with noisy and filtered images (From left to right: Original, 30\% noise, 50\% noise, 7x7 w/30\% noise, 15x15 w/30\% noise, 7x7 w/50\% noise, 15x15 w/50\% noise).}
 	\label{fig:median-result-3}
 \end{figure}
@@ -247,10 +247,10 @@ Lastly, simple averaging was used in order to compare with the median filtered i
 	\includegraphics[width=.2\textwidth]{../Images/boat}
 	\includegraphics[width=.2\textwidth]{../out/boat-noise-30}
 	\includegraphics[width=.2\textwidth]{../out/boat-noise-50}
-	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-7-30-median}
-	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-15-30-median}
-	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-7-50-median}
-	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-15-50-median}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-7-30}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-15-30}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-7-50}
+	\includegraphics[width=.2\textwidth]{../out/boat-smoothed-15-50}
 	\caption{A comparison of \texttt{boat.pgm} with noisy and filtered images (From left to right: Original, 30\% noise, 50\% noise, 7x7 w/30\% noise, 15x15 w/30\% noise, 7x7 w/50\% noise, 15x15 w/50\% noise).}
 	\label{fig:median-result-4}
 \end{figure}

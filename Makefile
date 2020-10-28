@@ -1,4 +1,4 @@
-CXXFLAGS     = -std=c++17 -fopenmp
+CXXFLAGS     = -std=c++17 -fopenmp -g
 OBJDIR       = obj
 DEPDIR       = $(OBJDIR)/.deps
 # Flags which, when added to gcc/g++, will auto-generate dependency files
@@ -63,7 +63,11 @@ out/%-median.pgm: Q3-Median/median Images/$$(word 1,$$(subst -, ,$$*)).pgm | out
 
 
 # Figures needed for the report
-report: 
+report: Images/patterns.png Images/pattern.png Images/lenna.png Images/sf.png Images/boat.png out/patterns-pattern-correlated.png
+report: out/lenna-7-average-smoothed.png out/lenna-15-average-smoothed.png out/lenna-7-gaussian-smoothed.png out/lenna-15-gaussian-smoothed.png out/sf-7-average-smoothed.png out/sf-15-average-smoothed.png out/sf-7-gaussian-smoothed.png out/sf-15-gaussian-smoothed.png
+report: out/lenna-7-30-median.png out/lenna-15-30-median.png out/lenna-7-50-median.png out/lenna-15-50-median.png out/boat-7-30-median.png out/boat-15-30-median.png out/boat-7-50-median.png out/boat-15-50-median.png
+report: out/lenna-noise-30.png out/lenna-noise-50.png out/boat-noise-30.png out/boat-noise-50.png
+report: out/lenna-smoothed-7-30.png out/lenna-smoothed-15-30.png out/lenna-smoothed-7-50.png out/lenna-smoothed-15-50.png out/boat-smoothed-7-30.png out/boat-smoothed-15-30.png out/boat-smoothed-7-50.png out/boat-smoothed-15-50.png 
 
 clean:
 	rm -rf $(OBJDIR)
