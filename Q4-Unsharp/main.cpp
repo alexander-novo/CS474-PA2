@@ -52,6 +52,8 @@ int unsharp(Arguments& arg) {
 
 	arg.outFile << out;
 	arg.outFile.close();
+
+	return 0;
 }
 
 bool verifyArguments(int argc, char** argv, Arguments& arg, int& err) {
@@ -88,6 +90,7 @@ bool verifyArguments(int argc, char** argv, Arguments& arg, int& err) {
 		return false;
 	} else if (arg.A < 1) {
 		std::cout << "A = \"" << arg.A << "\" must be greater than or equal to 1.\n";
+		printHelp();
 		err = 2;
 		return false;
 	}

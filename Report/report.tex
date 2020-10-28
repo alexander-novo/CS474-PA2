@@ -16,6 +16,7 @@
 \usepackage{physics}
 \usepackage{needspace}
 \usepackage[format=hang, justification=justified]{caption}
+\usepackage{subcaption}
 
 \usepackage{cleveref} % Needs to be loaded last
 
@@ -56,7 +57,7 @@
 
 \title{Programming Assignment 2}
 \subtitle{CS 474\\\url{https://github.com/alexander-novo/CS474-PA2}}
-\author{Alexander Novotny\\--\% Work\\Sections 4,5 \and Matthew Page\\50\% Work\\Sections 1, 2, and 3}
+\author{Alexander Novotny\\50\% Work\\Sections 4,5 \and Matthew Page\\50\% Work\\Sections 1, 2, and 3}
 \date{Due: October 26, 2020 \\ Submitted: \today}
 
 \begin{document}
@@ -94,10 +95,10 @@ In order to isolate the possible locations of the mask image within the input im
 
 \subsection{Results and Discussion}
 
-The correlation function was performed using a patterned input image with the mask corresponding to a single pattern similar to those within the input image. A mask size of 83x55 was chosen, corresponding to the dimension of the mask image. Figure 1 showcases the input images used, along with the resulting (normalized)  image of the correlation operation. According to the figure, it is easy to see the locations of the matching patterns found during the correlation process. These correspond to the brightest whte blobs within the resulting image. These blobs are indications of a high correlation value, which indicates that the most of the pixels within the neighborhood are similar to the corresponding mask values, resulting in an overall higher output value. Also, the general direction of the blobs can be used to further narrow the possible locations. For example, although there is a high correlation value in the blob near the top right of the image, the general orientation does not match that of the mask as well as the other three true matches.
+The correlation function was performed using a patterned input image with the mask corresponding to a single pattern similar to those within the input image. A mask size of 83x55 was chosen, corresponding to the dimension of the mask image. \Cref{fig:correlation-result-1} showcases the input images used, along with the resulting (normalized)  image of the correlation operation. According to the figure, it is easy to see the locations of the matching patterns found during the correlation process. These correspond to the brightest whte blobs within the resulting image. These blobs are indications of a high correlation value, which indicates that the most of the pixels within the neighborhood are similar to the corresponding mask values, resulting in an overall higher output value. Also, the general direction of the blobs can be used to further narrow the possible locations. For example, although there is a high correlation value in the blob near the top right of the image, the general orientation does not match that of the mask as well as the other three true matches.
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/patterns}
 	\includegraphics[width=.2\textwidth]{../Images/pattern}
@@ -114,13 +115,13 @@ The correlation function was performed using a patterned input image with the ma
 
 Averaging and Gaussian Smoothing are two common techniques for removing fine details from an image, resulting in a smoothed or blurred image. Both types of smoothing are examples of a linear spatial filter. Also, both types of smoothing techniques have similar properties, as well as different advantages and disadvantages. 
 
-Smoothing via averaging corresponds to taking the average of each pixel value within the bounds of the kernel and using the result as the output pixel. This operation results in an output value that takes into account all neighboring pixel values equally. MAthematically this operation can be represented as
+Smoothing via averaging corresponds to taking the average of each pixel value within the bounds of the kernel and using the result as the output pixel. This operation results in an output value that takes into account all neighboring pixel values equally. Mathematically this operation can be represented as
 
-\[f(x, y) \rightarrow \frac{1}{N} \sum_{s=-a}^a \sum_{t=-b}^b f(x+s, y+t)\]
+\[f(x, y) \rightarrow \frac{1}{N} \sum_{s=-a}^a \sum_{t=-b}^b f(x+s, y+t),\]
 
 where N is the number of elements in the mask. Another method of smoothing is to assign each weight value according to a Gaussian distribution. This results in better smoothing, however it is more difficult to implement compared to using averaging. The values of the mask can be taken from a 2D Gaussian distribution given mathematically as 
 
-\[w(s, t) = K e^{-\frac{s^2+t^2}{2\sigma^2}}\]
+\[w(s, t) = K e^{-\frac{s^2+t^2}{2\sigma^2}}.\]
 
 This method of smoothing has the benefit of considering pixels closer to the target pixel as more important or having a higher weight compared to pixels further away from the target image, typically resulting in a better smoothed image.
 
@@ -136,10 +137,10 @@ The main data structures used in the smoothing algorithms include the image clas
 
 \subsection{Results and Discussion}
 
-The techniques of averaging and gaussian smoothing were applied to two separate images, with two different mask sizes each. The results of the smoothing filters applied to the lenna.pgm image are shown in figure 2. According to the results, it appears that both filters perform well at removing a large amount of fine detail from the original image, especially near the fur material of the woman’s hat. However, it appears that the use of average smoothing using a 7x7 mask leaves the image more blurry compared to the Gaussian smoothed image with a similar sized mask. The average smoothed image also appears slightly darker compared to the others. For the 15x15 masked images, the differences become less evident, with the Gaussian smoothed image having slightly more discernible details and slightly less aliasing compared to the smoothed image via averaging. 
+The techniques of averaging and gaussian smoothing were applied to two separate images, with two different mask sizes each. The results of the smoothing filters applied to the lenna.pgm image are shown in \cref{fig:smoothing-result-1}. According to the results, it appears that both filters perform well at removing a large amount of fine detail from the original image, especially near the fur material of the woman’s hat. However, it appears that the use of average smoothing using a 7x7 mask leaves the image more blurry compared to the Gaussian smoothed image with a similar sized mask. The average smoothed image also appears slightly darker compared to the others. For the 15x15 masked images, the differences become less evident, with the Gaussian smoothed image having slightly more discernible details and slightly less aliasing compared to the smoothed image via averaging. 
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/lenna}
 	\includegraphics[width=.2\textwidth]{../out/lenna-7-average-smoothed}
@@ -150,9 +151,9 @@ The techniques of averaging and gaussian smoothing were applied to two separate 
 	\label{fig:smoothing-result-1}
 \end{figure}
 
-Similarly, the results of averaging and gaussian smoothing for the sf.pgm image are shown in figure 3. Like with the lenna.pgm images, both smoothed images with a 7x7 mask lose much of the fine grained details of the original image. However, the Gaussian smoothed image again appears slightly less aliased with slightly more discernible details, especially near the bridge trusses. For the 15x15 masks, the Gaussian filter again generates a smoother (less aliased) image compared to the averaging filter, even though both lose considerable detail compared to the 7x7 masks.
+Similarly, the results of averaging and gaussian smoothing for the sf.pgm image are shown in \cref{fig:smoothing-result-2}. Like with the lenna.pgm images, both smoothed images with a 7x7 mask lose much of the fine grained details of the original image. However, the Gaussian smoothed image again appears slightly less aliased with slightly more discernible details, especially near the bridge trusses. For the 15x15 masks, the Gaussian filter again generates a smoother (less aliased) image compared to the averaging filter, even though both lose considerable detail compared to the 7x7 masks.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/sf}
 	\includegraphics[width=.2\textwidth]{../out/sf-7-average-smoothed}
@@ -173,10 +174,10 @@ Similarly, the results of averaging and gaussian smoothing for the sf.pgm image 
 
 Median Filtering is another type of filter commonly used in image processing. Unlike the previous filters discussed, the median filter is an example of a nonlinear filter, whereby its output cannot be expressed as a linear combination of its input pixels. The median filter is performed by finding the median value within the neighborhood of pixels defined by the mask or kernel. The nonlinearity stems from the step of having to sort the pixel values in order to find the median value. 
 
-A common application of median filtering is removing certain types of noise from an image, often referred to as salt-and-pepper noise. This type of noise consists of random black and white pixels that become superimposed on an image. Figure 4 shows an example of this type of noise. This filter is able to remove so called salt-and-pepper noise due to the property of the median value m, which is defined as the 50th percentile of an ordered set of values. This implies that values on the extreme end of the scale, such as very dark or bright pixels, will in general not be selected to replace an image’s pixel during the filtering process. This results in an enhanced image with the noise removed, especially compared to using other linear spatial filters.
+A common application of median filtering is removing certain types of noise from an image, often referred to as salt-and-pepper noise. This type of noise consists of random black and white pixels that become superimposed on an image. \Cref{fig:noise-example-1} shows an example of this type of noise. This filter is able to remove so called salt-and-pepper noise due to the property of the median value m, which is defined as the 50th percentile of an ordered set of values. This implies that values on the extreme end of the scale, such as very dark or bright pixels, will in general not be selected to replace an image’s pixel during the filtering process. This results in an enhanced image with the noise removed, especially compared to using other linear spatial filters.
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\textwidth]{../out/lenna-noise-30}
 	\caption{An example of Salt-and-Pepper noise on the lenna.pgm image}
@@ -195,11 +196,12 @@ In order to test median filtering various noisy images were generated. The proce
 \subsection{Results and Discussion}
 \label{sec:median-results}
 
-The median filter was used on two separate images, both of which used varying amounts of noise. In figure 5 the results of the median filter using the lenna.pgm image are shown. In the case of using a larger mask size of 15x15, it appears that much more smoothing occurred as a result, leaving many of the details lost. However, the main features of the image are much more visible. In the case of a smaller filter size, there remained some artifacts from the noise, however the parts of the image that are not corrupted remain much more detailed compared to the use of larger mask.
-Figure 6 showcases similar results using the boat.pgm image. The use of a smaller mask results in less smearing in the final image, however there remains artifacts from the noise. In the case of 50\% noise, much of the details become obscured from the substantial amount of artifacts left in the image, possibly due to the overall lighter input image. In general is appears that a tradeoff between the size of the mask and the desired type of image.
+The median filter was used on two separate images, both of which used varying amounts of noise. In \cref{fig:median-result-1} the results of the median filter using the lenna.pgm image are shown. In the case of using a larger mask size of 15x15, it appears that much more smoothing occurred as a result, leaving many of the details lost. However, the main features of the image are much more visible. In the case of a smaller filter size, there remained some artifacts from the noise, however the parts of the image that are not corrupted remain much more detailed compared to the use of larger mask.
+
+\Cref{fig:median-result-2} showcases similar results using the boat.pgm image. The use of a smaller mask results in less smearing in the final image, however there remains artifacts from the noise. In the case of 50\% noise, much of the details become obscured from the substantial amount of artifacts left in the image, possibly due to the overall lighter input image. In general is appears that a tradeoff between the size of the mask and the desired type of image.
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/lenna}
 	\includegraphics[width=.2\textwidth]{../out/lenna-noise-30}
@@ -213,7 +215,7 @@ Figure 6 showcases similar results using the boat.pgm image. The use of a smalle
 \end{figure}
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/boat}
 	\includegraphics[width=.2\textwidth]{../out/boat-noise-30}
@@ -226,9 +228,9 @@ Figure 6 showcases similar results using the boat.pgm image. The use of a smalle
 	\label{fig:median-result-2}
 \end{figure}
 
-Lastly, simple averaging was used in order to compare with the median filtered images. Based on figure 7, it appears that averaging results in a lower contrast image compared to using median filtering, as well as having an aliased appearance, no matter the amount of noise or mask size. Figure 8 shows similar results using the boat.pgm image. The reason for these results includes the addition of very bright or dark pixels from the noise, which causes all output pixels to tend towards a similar grey value. The random distribution of the noise may also be responsible for the pixelation/aliasing. 
+Lastly, simple averaging was used in order to compare with the median filtered images. Based on \cref{fig:median-result-3}, it appears that averaging results in a lower contrast image compared to using median filtering, as well as having an aliased appearance, no matter the amount of noise or mask size. \Cref{fig:median-result-4} shows similar results using the boat.pgm image. The reason for these results includes the addition of very bright or dark pixels from the noise, which causes all output pixels to tend towards a similar grey value. The random distribution of the noise may also be responsible for the pixelation/aliasing. 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/lenna}
 	\includegraphics[width=.2\textwidth]{../out/lenna-noise-30}
@@ -242,7 +244,7 @@ Lastly, simple averaging was used in order to compare with the median filtered i
 \end{figure}
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=.2\textwidth]{../Images/boat}
 	\includegraphics[width=.2\textwidth]{../out/boat-noise-30}
@@ -260,15 +262,87 @@ Lastly, simple averaging was used in order to compare with the median filtered i
 \section{Unsharp Masking and High Boost Filtering}
 \label{sec:unsharp}
 
-
 \subsection{Theory}
+When a blurred version of an image is subtracted from the original image, what is left is an image of the edges from the original image. This technique is called unsharp masking, and adding the resulting edge image back to the original image to sharpen the edges is known as high boost filtering. \Cref{eq:highboost} shows how to calculate these images $g$ from the original image $f$ and its blurred version $\bar{f}$ with a constant $A \geq 1$. When $A = 1,$ the formula gives us the unsharp mask, and when $A > 1,$ we are using high boost filtering.
 
+\begin{equation}
+	g(x,y) = Af(x,y) - \bar{f}(x,y)
+	\label{eq:highboost}
+\end{equation}
 
 \subsection{Implementation}
+The image is first smoothed using a Gaussian kernel, given by \cref{tab:gaussian-7}, as in \cref{sec:smoothing}. Then \cref{eq:highboost} is applied directly to each pixel of the output image, and remapped to the interval $[0, 255]$ by first adding $255$ (to account for subtracting the blurred image) and dividing by $1 + A$ (to account for subtracting the blurred image and multiplying the original image by $A$).
 
+The source code for this implementation can be found in \cref{lst:unsharp}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		1 & 1 & 2 &  2 & 2 & 1 & 1 \\\hline
+        1 & 2 & 2 &  4 & 2 & 2 & 1 \\\hline
+        2 & 2 & 4 &  8 & 4 & 2 & 2 \\\hline
+        2 & 4 & 8 & 16 & 8 & 4 & 2 \\\hline
+        2 & 2 & 4 &  8 & 4 & 2 & 2 \\\hline
+        1 & 2 & 2 &  4 & 2 & 2 & 1 \\\hline
+        1 & 1 & 2 &  2 & 2 & 1 & 1 \\\hline
+	\end{tabular}
+	\caption{A $7 \times 7$ Gaussian kernel.}
+	\label{tab:gaussian-7}
+\end{table}
 
 \subsection{Results and Discussion}
 \label{sec:unsharp-results}
+
+\Cref{fig:unsharp-lenna} shows the result of applying the algorithm to \texttt{lenna.pgm} with a couple of different $A$ values. Note that since no contrast enhancements are applied, the image loses contrast due to mapping the results to the interval $[0,255]$. The unsharp mask shows a great amount of detail in the edges.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../Images/lenna}
+		\caption{The original \texttt{lenna.pgm}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-1-highboost}
+		\caption{The unsharp mask ($A = 1$)}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-2-highboost}
+		\caption{The high boost image ($A = 2$).}
+	\end{subfigure}
+	\caption{Comparison of \texttt{lenna.pgm} and its unsharp mask. No contrast enhancements are applied.}
+	\label{fig:unsharp-lenna}
+\end{figure}
+
+\Cref{fig:unsharp-f_16} shows the result of applying the algorithm to \texttt{f\_16.pgm} with a couple of different $A$ values. Similarly, the unsharp mask shows a great amount of detail i nthe edges.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../Images/f_16}
+		\caption{The original \texttt{f\_16.pgm}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/f_16-1-highboost}
+		\caption{The unsharp mask ($A = 1$)}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/f_16-2-highboost}
+		\caption{The high boost image ($A = 2$).}
+	\end{subfigure}
+	\caption{Comparison of \texttt{f\_16.pgm} and its unsharp mask. No contrast enhancements are applied.}
+	\label{fig:unsharp-f_16}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -277,19 +351,212 @@ Lastly, simple averaging was used in order to compare with the median filtered i
 
 \subsection{Theory}
 \label{sec:gradient-theory}
+Thinking of edges as drastically changing values in an image, edges exist precisely where the directional derivative of the image is large. Unfortunately, images aren't continuous functions, so we approximate partial derivatives as finite differences, as in \cref{eq:x-diff,eq:y-diff}.
 
+\begin{align}
+	f_x(x,y) &\approx \frac{f(x + 1, y) - f(x - 1, y)}{2}, \label{eq:x-diff}\\
+	f_y(x,y) &\approx \frac{f(x, y + 1) - f(x, y - 1)}{2} \label{eq:y-diff}
+\end{align}
+
+If we think of edges as locally maximal changing values, then the second derivative, or laplacian, will be 0. We can use the laplacian to find 0 crossings to find these edges, giving us more locality and faster computation than partial derivatives. Similarly to partial derivatives, we can approximate the laplacian using finite differences.
 
 \subsection{Implementation}
 \label{sec:gradient-implementation}
+We use the masks given in \cref{tab:diff-masks} to calculate different partial derivatives using finite differences. For the magnitude, a pair of $f_x,f_y$ masks are used to calculate both partial derivatives, and the magnitude is calculated, taking special care to remap values to the interval $[0, 255]$. For the Laplacian, the mask given in \cref{tab:laplacian-mask} is used to calculate the laplacian image.
 
+The source code for this implementation can be found in \cref{lst:gradient}.
+
+\begin{table}[H]
+	\centering
+	\begin{subtable}{.23\textwidth}
+		\centering
+		\begin{tabular}{|c|c|c|}
+			\hline
+			-1 & 0 & 1 \\\hline
+	        -1 & 0 & 1 \\\hline
+	        -1 & 0 & 1 \\\hline
+		\end{tabular}
+		\caption{The Prewitt $f_x$ mask}
+		\label{tab:prewitt-x}
+	\end{subtable}
+	\hfill
+	\begin{subtable}{.23\textwidth}
+		\centering
+		\begin{tabular}{|c|c|c|}
+			\hline
+			-1 & -1 & -1 \\\hline
+	         0 &  0 &  0 \\\hline
+	         1 &  1 &  1 \\\hline
+		\end{tabular}
+		\caption{The Prewitt $f_y$ mask}
+		\label{tab:prewitt-y}
+	\end{subtable}
+	\hfill
+	\begin{subtable}{.23\textwidth}
+		\centering
+		\begin{tabular}{|c|c|c|}
+			\hline
+			-1 & 0 & 1 \\\hline
+	        -2 & 0 & 2 \\\hline
+	        -1 & 0 & 1 \\\hline
+		\end{tabular}
+		\caption{The Sobel $f_x$ mask}
+		\label{tab:sobel-x}
+	\end{subtable}
+	\hfill
+	\begin{subtable}{.23\textwidth}
+		\centering
+		\begin{tabular}{|c|c|c|}
+			\hline
+			-1 & -2 & -1 \\\hline
+	         0 &  0 &  0 \\\hline
+	         1 &  2 &  1 \\\hline
+		\end{tabular}
+		\caption{The Sobel $f_y$ mask}
+		\label{tab:sobel-y}
+	\end{subtable}
+	
+	\caption{Several masks which can be used to approximate partial derivatives.}
+	\label{tab:diff-masks}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		0 &  1 & 0 \\\hline
+		1 & -4 & 1 \\\hline
+		0 &  1 & 0 \\\hline
+	\end{tabular}
+	\caption{A Laplacian mask.}
+	\label{tab:laplacian-mask}
+\end{table}
 
 \subsection{Results and Discussion}
 \label{sec:gradient-results}
+
+\Cref{fig:gradient-lenna} shows the result of applying various derivative-based sharpening algorithms to \texttt{lenna.pgm}. The gradient magnitudes give great constrast images of edges, while the laplacian gives really well-defined edges.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../Images/lenna}
+		\caption{The original \texttt{lenna.pgm}.}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-prewitt-x-gradient}
+		\caption{$f_x$ calculated using \cref{tab:prewitt-x}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-prewitt-y-gradient}
+		\caption{$f_y$ calculated using \cref{tab:prewitt-y}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-prewitt-mag-gradient}
+		\caption{The gradient magnitude.}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-sobel-x-gradient}
+		\caption{$f_x$ calculated using \cref{tab:sobel-x}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-sobel-y-gradient}
+		\caption{$f_y$ calculated using \cref{tab:sobel-y}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-sobel-mag-gradient}
+		\caption{The gradient magnitude.}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/lenna-laplacian}
+		\caption{The Laplacian, calculated with \cref{tab:laplacian-mask}.}
+	\end{subfigure}
+
+	\caption{Comparison of \texttt{lenna.pgm} and derivatives. No contrast enhancements are applied.}
+	\label{fig:gradient-lenna}
+\end{figure}
+
+\Cref{fig:gradient-sf} shows the result of applying various derivative-based sharpening algorithms to \texttt{sf.pgm}. The gradient magnitudes give great constrast images of edges, while the laplacian gives really well-defined edges.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../Images/sf}
+		\caption{The original \texttt{sf.pgm}.}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-prewitt-x-gradient}
+		\caption{$f_x$ calculated using \cref{tab:prewitt-x}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-prewitt-y-gradient}
+		\caption{$f_y$ calculated using \cref{tab:prewitt-y}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-prewitt-mag-gradient}
+		\caption{The gradient magnitude.}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-sobel-x-gradient}
+		\caption{$f_x$ calculated using \cref{tab:sobel-x}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-sobel-y-gradient}
+		\caption{$f_y$ calculated using \cref{tab:sobel-y}.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-sobel-mag-gradient}
+		\caption{The gradient magnitude.}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[t]{.3\textwidth}
+		\centering
+		\includegraphics[width = \textwidth]{../out/sf-laplacian}
+		\caption{The Laplacian, calculated with \cref{tab:laplacian-mask}.}
+	\end{subfigure}
+
+	\caption{Comparison of \texttt{sf.pgm} and derivatives. No contrast enhancements are applied.}
+	\label{fig:gradient-sf}
+\end{figure}
 
 \clearpage
 \listoflistings
 
 Source code can also be found on the project's GitHub page: \url{https://github.com/alexander-novo/CS474-PA2}. See previous assignments for common code (such as the \texttt{Image} class).
+
+\begin{longlisting}
+	\caption{Header file for the common \texttt{Mask} class.}
+	\label{lst:mask}
+	\cppcode{../Common/mask.h}
+\end{longlisting}
 
 \begin{longlisting}
 	\caption{Implementation file for the \texttt{correlate} program.}
@@ -312,13 +579,13 @@ Source code can also be found on the project's GitHub page: \url{https://github.
 \begin{longlisting}
 	\caption{Implementation file for the \texttt{unsharp} program.}
 	\label{lst:unsharp}
-	\cppcode{../Q4-Unsharp/main.cpp}
+	\cppcode[lastline = 57]{../Q4-Unsharp/main.cpp}
 \end{longlisting}
 
 \begin{longlisting}
 	\caption{Implementation file for the \texttt{gradient} program.}
 	\label{lst:gradient}
-	\cppcode{../Q5-Gradient/main.cpp}
+	\cppcode[lastline = 104]{../Q5-Gradient/main.cpp}
 \end{longlisting}
 
 \end{document}

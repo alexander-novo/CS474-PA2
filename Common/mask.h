@@ -4,8 +4,6 @@
 
 #include "image.h"
 
-// A simple class for smoothing kernels only - does not apply convolution properly if
-// weights are negative.
 template <typename T, std::size_t N>
 class Mask {
 	static_assert(N % 2 == 1, "Size of mask must be odd!");
@@ -18,10 +16,14 @@ public:
 	Image operator*(const Image& image) const;
 
 	T values[N][N];
-	const T& sum = _sum;
+	// A sum of all the positive and negative values in the mask, respectively
+	// Used for remapping to [0,255] after convolution
+	const T& posSum = _posSum;
+	const T& negSum = _negSum;
 
 private:
-	T _sum;
+	T _posSum;
+	T _negSum;
 };
 
 template <typename T, std::size_t N>
@@ -29,11 +31,11 @@ Mask<T, N>::Mask() {}
 
 template <typename T, std::size_t N>
 Mask<T, N>::Mask(const T (&values)[N][N]) {
-	_sum = 0;
+	_posSum = _negSum = 0;
 	for (unsigned i = 0; i < N; i++) {
 		for (unsigned j = 0; j < N; j++) {
 			Mask<T, N>::values[i][j] = values[i][j];
-			_sum += values[i][j];
+			(values[i][j] < 0 ? _negSum : _posSum) += values[i][j];
 		}
 	}
 }
@@ -68,7 +70,9 @@ Image Mask<T, N>::operator*(const Image& image) const {
 					sum += values[v][u] * image[v_mod][u_mod];
 				}
 			}
-			re[y][x] = sum / _sum;
+
+			// re-map to [0,255]
+			re[y][x] = (sum - _negSum * re.maxVal) / (_posSum - _negSum);
 		}
 	}
 

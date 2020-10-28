@@ -13,7 +13,7 @@ REQUIRED_1   = out/patterns-pattern-correlated.pgm
 REQUIRED_2   = out/lenna-7-average-smoothed.pgm out/lenna-15-average-smoothed.pgm out/lenna-7-gaussian-smoothed.pgm out/lenna-15-gaussian-smoothed.pgm out/sf-7-average-smoothed.pgm out/sf-15-average-smoothed.pgm out/sf-7-gaussian-smoothed.pgm out/sf-15-gaussian-smoothed.pgm
 REQUIRED_3   = out/lenna-7-30-median.pgm out/lenna-15-30-median.pgm out/lenna-7-50-median.pgm out/lenna-15-50-median.pgm out/boat-7-30-median.pgm out/boat-15-30-median.pgm out/boat-7-50-median.pgm out/boat-15-50-median.pgm
 REQUIRED_4   = out/lenna-1-highboost.pgm out/lenna-2-highboost.pgm out/f_16-1-highboost.pgm out/f_16-2-highboost.pgm
-REQUIRED_5   =
+REQUIRED_5   = out/lenna-prewitt-x-gradient.pgm out/lenna-prewitt-y-gradient.pgm out/lenna-prewitt-mag-gradient.pgm out/lenna-sobel-x-gradient.pgm out/lenna-sobel-y-gradient.pgm out/lenna-sobel-mag-gradient.pgm out/lenna-laplacian.pgm out/sf-prewitt-x-gradient.pgm out/sf-prewitt-y-gradient.pgm out/sf-prewitt-mag-gradient.pgm out/sf-sobel-x-gradient.pgm out/sf-sobel-y-gradient.pgm out/sf-sobel-mag-gradient.pgm out/sf-laplacian.pgm
 REQUIRED_OUT = $(REQUIRED_1) $(REQUIRED_2) $(REQUIRED_3) $(REQUIRED_4) $(REQUIRED_5)
 
 OBJDIRS      = $(addprefix $(OBJDIR)/, $(dir $(SOURCES)))
@@ -62,15 +62,23 @@ out/%-highboost.pgm: Q4-Unsharp/unsharp Images/$$(word 1,$$(subst -, ,$$*)).pgm 
 	Q4-Unsharp/unsharp Images/$(word 1,$(subst -, ,$*)).pgm $(word 2,$(subst -, ,$*)) $@
 
 ### Question 5 Outputs ###
+.SECONDEXPANSION:
+out/%-gradient.pgm: Q5-Gradient/gradient Images/$$(word 1,$$(subst -, ,$$*)).pgm | out
+	Q5-Gradient/gradient Images/$(word 1,$(subst -, ,$*)).pgm $(word 2,$(subst -, ,$*)) $@ -d $(word 3,$(subst -, ,$*))
 
+out/%-laplacian.pgm: Q5-Gradient/gradient Images/%.pgm | out
+	Q5-Gradient/gradient Images/$*.pgm laplacian $@
 
 # Figures needed for the report
-report: Images/patterns.png Images/pattern.png Images/lenna.png Images/sf.png Images/boat.png out/patterns-pattern-correlated.png
-report: out/lenna-7-average-smoothed.png out/lenna-15-average-smoothed.png out/lenna-7-gaussian-smoothed.png out/lenna-15-gaussian-smoothed.png out/sf-7-average-smoothed.png out/sf-15-average-smoothed.png out/sf-7-gaussian-smoothed.png out/sf-15-gaussian-smoothed.png
+report: Images/patterns.png Images/pattern.png Images/lenna.png Images/sf.png Images/boat.png Images/f_16.png out/patterns-pattern-correlated.png
+report: out/lenna-7-average-smoothed.png out/lenna-15-average-smoothed.png out/lenna-7-gaussian-smoothed.png out/lenna-15-gaussian-smoothed.png
+report: out/sf-7-average-smoothed.png out/sf-15-average-smoothed.png out/sf-7-gaussian-smoothed.png out/sf-15-gaussian-smoothed.png
 report: out/lenna-7-30-median.png out/lenna-15-30-median.png out/lenna-7-50-median.png out/lenna-15-50-median.png out/boat-7-30-median.png out/boat-15-30-median.png out/boat-7-50-median.png out/boat-15-50-median.png
 report: out/lenna-noise-30.png out/lenna-noise-50.png out/boat-noise-30.png out/boat-noise-50.png
 report: out/lenna-smoothed-7-30.png out/lenna-smoothed-15-30.png out/lenna-smoothed-7-50.png out/lenna-smoothed-15-50.png out/boat-smoothed-7-30.png out/boat-smoothed-15-30.png out/boat-smoothed-7-50.png out/boat-smoothed-15-50.png 
 report: out/lenna-1-highboost.png out/lenna-2-highboost.png out/f_16-1-highboost.png out/f_16-2-highboost.png
+report: out/lenna-prewitt-x-gradient.png out/lenna-prewitt-y-gradient.png out/lenna-prewitt-mag-gradient.png out/lenna-sobel-x-gradient.png out/lenna-sobel-y-gradient.png out/lenna-sobel-mag-gradient.png out/lenna-laplacian.png
+report: out/sf-prewitt-x-gradient.png out/sf-prewitt-y-gradient.png out/sf-prewitt-mag-gradient.png out/sf-sobel-x-gradient.png out/sf-sobel-y-gradient.png out/sf-sobel-mag-gradient.png out/sf-laplacian.png
 
 clean:
 	rm -rf $(OBJDIR)
