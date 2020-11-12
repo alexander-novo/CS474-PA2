@@ -4,6 +4,44 @@
 
 #include "image.h"
 
+template <typename T>
+class MaskResult {
+public:
+	MaskResult(unsigned rows, unsigned cols, T min = 0, T max = 0);
+	MaskResult(const MaskResult<T>&);  // Copy constructor
+	MaskResult(MaskResult<T>&&);       // Move constructor
+	~MaskResult();
+
+	operator Image() const&;
+	operator Image() &&;
+	T* operator[](unsigned i);
+	const T* operator[](unsigned i) const;
+
+	/**
+	 * Apply a transformation to each pixel.
+	 *
+	 * @param transformation The transformation to apply.
+	 * @param ivp            Whether or not the transformation attains a maximum on
+	 *                       the interval [min, max] exactly at one of the end points
+	 *                       and a minimum at the other end point. All monotonic
+	 *                       transformations have this property.
+	 */
+	void transform(T (*transformation)(const T&), bool ivp = true);
+
+	T* const& data       = _data;
+	const unsigned& rows = _rows;
+	const unsigned& cols = _cols;
+
+	T min, max;
+
+private:
+	MaskResult(unsigned rows, unsigned cols, T min, T max, T* data);
+	T* _data;
+	unsigned _rows, _cols;
+
+	void calcMinMax();
+};
+
 template <typename T, std::size_t N>
 class Mask {
 	static_assert(N % 2 == 1, "Size of mask must be odd!");
@@ -13,7 +51,7 @@ public:
 	Mask(const T (&values)[N][N]);
 
 	// Convolution
-	Image operator*(const Image& image) const;
+	MaskResult<T> operator*(const Image& image) const;
 
 	T values[N][N];
 	// A sum of all the positive and negative values in the mask, respectively
@@ -25,6 +63,121 @@ private:
 	T _posSum;
 	T _negSum;
 };
+
+template <typename T>
+MaskResult<T>::MaskResult(unsigned rows, unsigned cols, T min, T max, T* data)
+    : _rows(rows), _cols(cols), min(min), max(max), _data(data) {}
+
+template <typename T>
+MaskResult<T>::MaskResult(unsigned rows, unsigned cols, T min, T max)
+    : MaskResult(rows, cols, min, max, new T[rows * cols]) {}
+
+template <typename T>
+MaskResult<T>::MaskResult(const MaskResult<T>& other)
+    : MaskResult(other._rows, other._cols, other.min, other.max) {
+#pragma omp parallel for reduction(min : min) reduction(max : max)
+	for (unsigned i = 0; i < _rows * _cols; i++) {
+		_data[i] = other._data[i];
+		if (data[i] < min)
+			min = data[i];
+		else if (data[i] > max)
+			max = data[i];
+	}
+}
+
+template <typename T>
+MaskResult<T>::MaskResult(MaskResult<T>&& other)
+    : MaskResult(other._rows, other._cols, other.min, other.max, other._data) {
+	other._rows = other._cols = other.min = other.max = 0;
+	delete[] other._data;
+	other._data = nullptr;
+}
+
+template <typename T>
+MaskResult<T>::~MaskResult() {
+	if (_data != nullptr) delete[] _data;
+}
+
+template <typename T>
+MaskResult<T>::operator Image() const& {
+	Image re(_rows, _cols, 255);
+
+	if (min >= max) calcMinMax();
+
+#pragma omp parallel for
+	for (unsigned i = 0; i < _rows * _cols; i++) {
+		re.pixels[i] = (data[i] - min) * re.maxVal / (max - min);
+	}
+
+	return re;
+}
+
+template <typename T>
+MaskResult<T>::operator Image() && {
+	Image re(_rows, _cols, 255);
+
+	if (min >= max) calcMinMax();
+
+#pragma omp parallel for
+	for (unsigned i = 0; i < _rows * _cols; i++) {
+		re.pixels[i] = (data[i] - min) * re.maxVal / (max - min);
+	}
+
+	return re;
+}
+
+template <>
+MaskResult<Image::pixelT>::operator Image() && {
+	Image re(_rows, _cols, 255, _data);
+
+	_rows = _cols = min = max = 0;
+	_data                     = nullptr;
+
+	return re;
+}
+
+template <typename T>
+T* MaskResult<T>::operator[](unsigned i) {
+	return _data + i * _cols;
+}
+
+template <typename T>
+const T* MaskResult<T>::operator[](unsigned i) const {
+	return _data + i * _cols;
+}
+
+template <typename T>
+void MaskResult<T>::transform(T (*transformation)(const T&), bool ivp) {
+#pragma omp parallel for
+	for (unsigned i = 0; i < _rows * _cols; i++) {
+		data[i] = transformation(data[i]);
+	}
+
+	if (ivp && min < max) {
+		min = transformation(min);
+		max = transformation(max);
+		if (min > max) { std::swap(min, max); }
+	} else {
+		calcMinMax();
+	}
+}
+
+template <typename T>
+void MaskResult<T>::calcMinMax() {
+	min = std::min(data[0], data[1]);
+	max = std::max(data[0], data[1]);
+
+#pragma omp parallel for reduction(min : min) reduction(max : max)
+	for (unsigned i = 2; i < _rows * _cols - 1; i += 2) {
+		if (data[0] < data[1]) {
+			min = std::min(min, data[0]);
+			max = std::max(max, data[1]);
+		} else {
+			min = std::min(min, data[1]);
+			max = std::max(max, data[0]);
+		}
+	}
+}
 
 template <typename T, std::size_t N>
 Mask<T, N>::Mask() {}
@@ -41,8 +194,9 @@ Mask<T, N>::Mask(const T (&values)[N][N]) {
 }
 
 template <typename T, std::size_t N>
-Image Mask<T, N>::operator*(const Image& image) const {
-	Image re(image.rows, image.cols, image.maxVal);
+MaskResult<T> Mask<T, N>::operator*(const Image& image) const {
+	MaskResult<T> re(image.rows, image.cols, _negSum * image.maxVal,
+	                 _posSum * image.maxVal);
 
 	// x and y (and u and v) are interchanged from normal for cache locality purposes
 #pragma omp parallel for collapse(2)
@@ -71,8 +225,7 @@ Image Mask<T, N>::operator*(const Image& image) const {
 				}
 			}
 
-			// re-map to [0,255]
-			re[y][x] = (sum - _negSum * re.maxVal) / (_posSum - _negSum);
+			re[y][x] = sum;
 		}
 	}
 

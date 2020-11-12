@@ -49,20 +49,21 @@ int gradient(Arguments& arg) {
 					out = prewitt[1] * arg.inputImage;
 					break;
 				case Arguments::MAGNITUDE:
-					Image x = prewitt[0] * arg.inputImage;
-					out     = prewitt[1] * arg.inputImage;
+					MaskResult<int> x = prewitt[0] * arg.inputImage;
+					MaskResult<int> y = prewitt[1] * arg.inputImage;
 // Compute magnitude
 #pragma omp parallel for
 					for (unsigned i = 0; i < out.cols * out.rows; i++) {
 						// Subtract out.maxVal / 2.0, since we have negative gradient
 						// values, but we mapped to [0, 255]. Divide by 2.0 to map to
 						// [0, 255] again
-						out.pixels[i] = sqrt(((out.pixels[i] - out.maxVal / 2.0) *
-						                          (out.pixels[i] - out.maxVal / 2.0) +
-						                      (x.pixels[i] - out.maxVal / 2.0) *
-						                          (x.pixels[i] - out.maxVal / 2.0)) /
-						                     2.0);
+						y.data[i] =
+						    sqrt(x.data[i] * x.data[i] + y.data[i] + y.data[i]);
 					}
+					y.min         = 0;
+					unsigned xMax = std::max(std::abs(x.min), std::abs(x.max));
+					unsigned yMax = std::max(std::abs(y.min), std::abs(y.max));
+					y.max         = sqrt(xMax * xMax + yMax * yMax);
 					break;
 			}
 			break;
@@ -75,20 +76,21 @@ int gradient(Arguments& arg) {
 					out = sobel[1] * arg.inputImage;
 					break;
 				case Arguments::MAGNITUDE:
-					Image x = sobel[0] * arg.inputImage;
-					out     = sobel[1] * arg.inputImage;
-					// Compute magnitude
+					MaskResult<int> x = sobel[0] * arg.inputImage;
+					MaskResult<int> y = sobel[1] * arg.inputImage;
+// Compute magnitude
 #pragma omp parallel for
 					for (unsigned i = 0; i < out.cols * out.rows; i++) {
 						// Subtract out.maxVal / 2.0, since we have negative gradient
 						// values, but we mapped to [0, 255]. Divide by 2.0 to map to
 						// [0, 255] again
-						out.pixels[i] = sqrt(((out.pixels[i] - out.maxVal / 2.0) *
-						                          (out.pixels[i] - out.maxVal / 2.0) +
-						                      (x.pixels[i] - out.maxVal / 2.0) *
-						                          (x.pixels[i] - out.maxVal / 2.0)) /
-						                     2.0);
+						y.data[i] =
+						    sqrt(x.data[i] * x.data[i] + y.data[i] + y.data[i]);
 					}
+					y.min         = 0;
+					unsigned xMax = std::max(std::abs(x.min), std::abs(x.max));
+					unsigned yMax = std::max(std::abs(y.min), std::abs(y.max));
+					y.max         = sqrt(xMax * xMax + yMax * yMax);
 					break;
 			}
 			break;

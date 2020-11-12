@@ -24,6 +24,7 @@ public:
 	};
 
 	Image();
+	Image(unsigned M, unsigned N, unsigned Q, pixelT *p);
 	Image(unsigned M, unsigned N, unsigned Q);
 	Image(const Image &);  // Copy constructor
 	Image(Image &&);       // Move constructor
@@ -50,7 +51,6 @@ public:
 	const unsigned &maxVal = Q;
 
 private:
-	Image(unsigned, unsigned, unsigned, pixelT *);
 	unsigned M, N, Q;
 	pixelT *pixelValue;
 };
